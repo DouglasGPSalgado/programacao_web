@@ -1,6 +1,7 @@
 const mongoose = require('../database');
 const bcryptjs = require('bcryptjs');
 
+// Definição do schema de usuário
 const UserSchema = new mongoose.Schema({
  name: {
     type: String,
@@ -15,7 +16,7 @@ const UserSchema = new mongoose.Schema({
  password: {
     type: String,
     require: true,
-    select: false,
+    select: false, // A senha não será retornada nas consultas ao banco de dados
  },
  createdAt: {
     type: Date,
@@ -23,6 +24,7 @@ const UserSchema = new mongoose.Schema({
  },
 });
 
+// Middleware para hash da senha antes de salvar o usuário no banco de dados
 UserSchema.pre('save', async function(next) {
    const hash = await bcryptjs.hash(this.password, 10);
    this.password = hash;
@@ -30,6 +32,8 @@ UserSchema.pre('save', async function(next) {
    next();
 })
 
+// Definição do modelo de usuário
 const User = mongoose.model('User', UserSchema);
 
+// Exportação do modelo de usuário para uso em outros módulos
 module.exports = User;
